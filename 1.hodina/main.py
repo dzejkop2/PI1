@@ -1,16 +1,24 @@
-# This is a sample Python script.
+# Toto je komentar
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+"""
+Toto je viac riadkový komentár
+"""
 
+print("Ahoj")
+x = 10
+print("Premmena X má hodnotu:", x)
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+obvod = 4 * x
+obsah = x * x
+print("Obsah je", obsah)
+print("Obvod je", obvod)
 
+x = 10
+y = 20
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+print("x=",x)
+print("y=",y)
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+z = x
+x = y
+y = z 
