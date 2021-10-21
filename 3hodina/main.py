@@ -36,4 +36,3 @@ print(pocet_samohlasok, "samohlasok")
 print(pocet_cisel, "cisel")
 print(pocet_znakov, "znakov")
 """
-
