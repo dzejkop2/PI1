@@ -36,3 +36,15 @@ print(pocet_samohlasok, "samohlasok")
 print(pocet_cisel, "cisel")
 print(pocet_znakov, "znakov")
 """
+"""
+riadky = int(input("Zadaj počet riadkov:"))
+stlpce = int(input("Zadaj počet stlpcov:"))
+
+for i in range(0,stlpce):
+    for j in range(0,riadky):
+        print("*", end="")
+    print()
+"""
+vyska = int(input("Zadaj vysku trojuholnika"))
+
+
