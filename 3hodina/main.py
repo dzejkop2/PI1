@@ -45,6 +45,6 @@ for i in range(0,stlpce):
         print("*", end="")
     print()
 """
-vyska = int(input("Zadaj vysku trojuholnika"))
+#vyska = int(input("Zadaj vysku trojuholnika"))
 
 
