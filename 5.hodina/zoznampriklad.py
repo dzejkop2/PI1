@@ -1,9 +1,10 @@
+"""
 cisla = list(range(10,0,-1))
 for i in cisla:
     print(i)
 
 print(cisla)
-
+"""
 opakovanie = "ano"
 ovocie = ["jablko","banan","hruska","malina"]
 zelenina = ["zemiak","cibula","uhorka","brokolica","paradajka"]

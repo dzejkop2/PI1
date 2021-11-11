@@ -18,3 +18,5 @@ for i in range(dlzkazoznamu):
     cislo = int(cislo)
     rozdielcisla = cislo - median
     print(cislo,"sa od medianu líši o", rozdielcisla)
+
+print(median)
