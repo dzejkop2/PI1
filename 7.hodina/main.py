@@ -14,4 +14,4 @@ basen = len(slova)
 for i in range(subory):
     if i >= basen:
         y = i - basen
-    open("%s.txt" % i, "w").write(slova[y])
+    open("%s.txt" % i, "w", encoding="utf-8").write(slova[y])
