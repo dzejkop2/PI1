@@ -15,6 +15,6 @@ while True:
         skupina2.append(nick)
     elif skupina == 2:
         skupina3.append(nick)
+    print("V 1.skupine su: ", skupina1)
     print("V 2.skupine su: ", skupina2)
     print("V 3.skupine su: ", skupina3)
-    print("V 1.skupine su: ", skupina1)
