@@ -17,14 +17,22 @@ while True:
     poloha1 = int(input("Zadaj polohu 1: "))
     if poloha1 > 3:
         print("Zadaj mensie cislo")
+        continue
     elif poloha1 == 0:
         print("Zadaj vacsie cislo")
+        continue
+    if poloha1 == "":
+        break
 
     poloha2 = int(input("Zadaj polohu 2: "))
     if poloha2 > 3:
         print("Zadaj mensie cislo")
+        continue
     elif poloha2 == 0:
         print("Zadaj vacsie cislo")
+        continue
+    if poloha2 == "":
+        break
     vkladanie = hracia_plocha[poloha1][poloha2] = "X"
 
     vypisPlochy(hracia_plocha)
@@ -32,12 +40,20 @@ while True:
     poloha1 = int(input("Zadaj polohu 1: "))
     if poloha1 > 3:
         print("Zadaj mensie cislo")
+        continue
     elif poloha1 == 0:
         print("Zadaj vacsie cislo")
+        continue
+    if poloha1 == "":
+        break
     poloha2 = int(input("Zadaj polohu 2: "))
     if poloha2 > 3:
         print("Zadaj mensie cislo")
+        continue
     elif poloha2 == 0:
         print("Zadaj vacsie cislo")
+        continue
+    if poloha2 == "":
+        break
     vkladanie = hracia_plocha[poloha1][poloha2] = "O"
 
