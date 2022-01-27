@@ -10,7 +10,7 @@ VYSKA = 900
 
 #lobda
 VELKOST_LOPTY = 20
-RYCHLOST = 200 #px za sekundu
+RYCHLOST = 250 #px za sekundu
 
 #palky
 SIRKA_PALKY = 10
