@@ -1,16 +1,18 @@
 import pyglet
 import random
+import RectangleCollision
 
 #okno
 from pyglet import gl
 from pyglet.window import key
+from pyglet.window import mouse
 
 SIRKA = 1200
 VYSKA = 900
 
 #lobda
 VELKOST_LOPTY = 20
-RYCHLOST = 250 #px za sekundu
+RYCHLOST = 600 #px za sekundu
 
 #palky
 SIRKA_PALKY = 10
@@ -31,6 +33,8 @@ rychlost_lopty = [0,0]
 stisknute_klavesy = set()
 SKORE = [0,0]
 
+
+max_skore = int(input("Zadaj maximalne skore: "))
 
 #reset lopty na poziciu
 def reset():
@@ -151,17 +155,23 @@ def obnov_stav(dt):
             SKORE[0] += 1
             reset()
 
+    if SKORE[0] >= max_skore:
+        exit()
+    if SKORE[1] >= max_skore:
+        exit()
+
+def pong():
+    reset()
+    window = pyglet.window.Window(width=SIRKA, height=VYSKA)
+    window.push_handlers(
+        on_draw=vykresli,
+        on_key_press=stisk_klavesnice,
+        on_key_release=pusti_klavesnice,
+    )
+    pyglet.clock.schedule(posuvanie)
+    pyglet.clock.schedule(obnov_stav)
+
+    pyglet.app.run()
 
 
-reset()
-window = pyglet.window.Window(width=SIRKA, height=VYSKA)
-window.push_handlers(
-    on_draw=vykresli,
-    on_key_press=stisk_klavesnice,
-    on_key_release=pusti_klavesnice,
-)
-pyglet.clock.schedule(posuvanie)
-pyglet.clock.schedule(obnov_stav)
-
-
-pyglet.app.run()
+pong()
