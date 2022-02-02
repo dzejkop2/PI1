@@ -5,6 +5,12 @@ import RectangleCollision
 #okno
 from pyglet import gl
 from pyglet.window import key
+from pyglet.window import Window
+
+w1 = pyglet.window.Window()
+w1.set_visible(False)
+w2 = pyglet.window.Window()
+w2.set_visible(False)
 from pyglet.window import mouse
 
 SIRKA = 1200
@@ -33,8 +39,22 @@ rychlost_lopty = [0,0]
 stisknute_klavesy = set()
 SKORE = [0,0]
 
-
 max_skore = int(input("Zadaj maximalne skore: "))
+
+def vyhra1():
+    pyglet.text.Label("Vyhral hráč 1",
+                            font_name='Times New Roman',
+                            font_size=36,
+                            x=w1.width/2, y=w1.height/2,
+                            anchor_x='center', anchor_y='center')
+def vyhra2():
+    pyglet.text.Label("Vyhral hráč 2",
+                            font_name='Times New Roman',
+                            font_size=36,
+                            x=w2.width/2, y=w2.height/2,
+                            anchor_x='center', anchor_y='center')
+
+window = pyglet.window.Window(width=SIRKA, height=VYSKA)
 
 #reset lopty na poziciu
 def reset():
@@ -72,7 +92,8 @@ def stisk_klavesnice(symbol,modifikatory):
         stisknute_klavesy.add(('hore', 1))
     if symbol == key.DOWN:
         stisknute_klavesy.add(('dole', 1))
-
+    if symbol == key.SPACE:
+        stisknute_klavesy.add(('konec'))
 #pustenie klaves
 def pusti_klavesnice(symbol,modifikatory):
     if symbol == key.W:
@@ -83,6 +104,8 @@ def pusti_klavesnice(symbol,modifikatory):
         stisknute_klavesy.discard(('hore', 1))
     if symbol == key.DOWN:
         stisknute_klavesy.discard(('dole', 1))
+    if symbol == key.SPACE:
+        stisknute_klavesy.discard(('konec'))
 
 #vykreslenie hracieho poľa
 def vykresli():
@@ -155,23 +178,50 @@ def obnov_stav(dt):
             SKORE[0] += 1
             reset()
 
+    def vyhral_hrac_1():
+        window.close()
+        w1.clear()
+        w1.set_visible(True)
+        w1.push_handlers(
+            on_draw=vyhra1,
+            on_key_press=stisk_klavesnice,
+            on_key_release=pusti_klavesnice,
+        )
+        if ('konec') in stisknute_klavesy:
+            exit()
+
+
+    def vyhral_hrac_2():
+        window.close()
+        w2.clear()
+        w2.set_visible(True)
+        w2.push_handlers(
+            on_draw=vyhra2,
+            on_key_press=stisk_klavesnice,
+            on_key_release=pusti_klavesnice,
+        )
+        if ('konec') in stisknute_klavesy:
+            exit()
+
+
     if SKORE[0] >= max_skore:
-        exit()
-    if SKORE[1] >= max_skore:
-        exit()
+        vyhral_hrac_1()
 
-def pong():
-    reset()
-    window = pyglet.window.Window(width=SIRKA, height=VYSKA)
-    window.push_handlers(
-        on_draw=vykresli,
-        on_key_press=stisk_klavesnice,
-        on_key_release=pusti_klavesnice,
-    )
-    pyglet.clock.schedule(posuvanie)
-    pyglet.clock.schedule(obnov_stav)
-
-    pyglet.app.run()
+    elif SKORE[1] >= max_skore:
+        vyhral_hrac_2()
 
 
-pong()
+
+reset()
+window.push_handlers(
+    on_draw=vykresli,
+    on_key_press=stisk_klavesnice,
+    on_key_release=pusti_klavesnice,
+)
+pyglet.clock.schedule(posuvanie)
+pyglet.clock.schedule(obnov_stav)
+
+
+
+
+pyglet.app.run()
