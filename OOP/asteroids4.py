@@ -19,7 +19,9 @@ game_objects = []
 batch = pyglet.graphics.Batch() #ZOZNAM SPRITOV PRE ZJEDNODUŠENÉ VYKRESLENIE
 pressed_keyboards = set()       #MNOŽINA ZMAČKNUTÝCH KLÁVES
 
-# Todo: Pridaj KONŠTANTY pre delay na strelbu, laserlifetime, laserspeed
+delay_shooting = 0.5
+laserlifetime = 45
+laserspeed = 200
 
 "Score"
 score = 0
@@ -134,13 +136,29 @@ class Spaceship(SpaceObject):
     "Konśtruktor"
     def __init__(self, sprite, x ,y):
         super().__init__(sprite,x,y)
-        self.fire = -1 #PREMENNÁ PRE DELAY streľby
+        self.laser_ready = True
 
     """
     Metóda zodpovedná za vystrelenie laseru
     """
     def shoot(self):
         # Todo: Vytvor nový objekt typu Laser a nastav parameter fire na hodnotu delayu
+        img = pyglet.image.load("Assetss/PNG/Lasers/laserBlue04.png")
+        set_anchor_of_image_to_center(img)
+
+        laser_x = self.sprite.x + math.cos(self.rotation) * self.radius
+        laser_y = self.sprite.y + math.sin(self.rotation) * self.radius
+
+
+
+        laser = Laser(img,laser_x,laser_y)
+        laser.rotation = self.rotation
+
+    
+        laser.sprite.rotation = self.sprite.rotation 
+
+        game_objects.append(laser)
+
         pass
 
     """
@@ -163,19 +181,22 @@ class Spaceship(SpaceObject):
 
         "Otočenie doľava - A"
         if 'A' in pressed_keyboards:
-            self.rotation -= ROTATION_SPEED
+            self.rotation += ROTATION_SPEED
 
         "Otočenie doprava - D"
         if 'D' in pressed_keyboards:
-            self.rotation += ROTATION_SPEED
+            self.rotation -= ROTATION_SPEED
 
         "Ručná brzda - SHIFT"
         if 'SHIFT' in pressed_keyboards:
             self.x_speed = 0
             self.y_speed = 0
 
-        # Todo: pridaj akciu po stlačení tlačítka SPACE = shoot
-        #self.fire -= dt # Todo: Je treba odčítať delay z fire
+        if "SPACE" in pressed_keyboards and self.laser_ready:
+            self.shoot()
+            self.laser_ready = False
+            pyglet.clock.schedule_once(self.reload, delay_shooting)
+            
 
         "VYBERIE VŠETKY OSTATNE OBJEKTY OKREM SEBA SAMA"
         for obj in [o for o in game_objects if o != self]:
@@ -192,7 +213,9 @@ class Spaceship(SpaceObject):
         self.rotation = 1.57  # radiany -> smeruje hore
         self.x_speed = 0
         self.y_speed = 0
-
+    
+    def reload(self,dt):
+        self.laser_ready = True
 
 """
 Trieda Asteroid
@@ -206,7 +229,9 @@ class Asteroid(SpaceObject):
 
     "Metóda ktorá sa vykoná ak dôjde ku kolíziiwwwww a asteroidu"
     def hit_by_laser(self, laser):
-        # Todo: update score + kolizia
+        # Todo: update score
+        self.delete()
+        laser.delete()
         pass
 
 """
@@ -214,7 +239,24 @@ Trieda Laser
 """
 class Laser(SpaceObject):
     #Todo: dorobiť triedu Laser
-    pass
+    def __init__(self, sprite, x ,y):
+        super().__init__(sprite,x,y)
+        self.y_speed = laserspeed * math.sin(self.rotation)
+        self.x_speed = laserspeed * math.cos(self.rotation)  
+        self.laserlifetime = laserlifetime
+    def tick(self,dt):
+        super().tick(dt)
+
+        self.laserlifetime -= 0.5
+        if self.laserlifetime == 0:
+            self.delete()
+
+        for obj in [o for o in game_objects if o != self and o != Spaceship]:
+            d = self.distance(obj)
+            if d < self.radius + obj.radius:
+                obj.hit_by_laser(self)
+                break
+    
 
 
 """
@@ -239,6 +281,7 @@ class Game:
                            'Assetss/PNG/Meteors/meteorGrey_med1.png',
                            'Assetss/PNG/Meteors/meteorGrey_small1.png',
                            'Assetss/PNG/Meteors/meteorGrey_tiny1.png']
+
 
     """
     Vytvorenie objektov pre začiatok hry
@@ -320,7 +363,8 @@ class Game:
             pressed_keyboards.add('D')
         if symbol == key.LSHIFT:
             pressed_keyboards.add('SHIFT')
-        #Todo: SPACE
+        if symbol == key.SPACE:
+            pressed_keyboards.add("SPACE")
 
     """
     Event metóda pre spracovanie klávesových výstupov
@@ -336,7 +380,8 @@ class Game:
             pressed_keyboards.discard('D')
         if symbol == key.LSHIFT:
             pressed_keyboards.discard('SHIFT')
-        # Todo: SPACE
+        if symbol == key.SPACE:
+            pressed_keyboards.discard("SPACE")
 
     """
     Update metóda
