@@ -142,20 +142,14 @@ class Spaceship(SpaceObject):
     Metóda zodpovedná za vystrelenie laseru
     """
     def shoot(self):
-        # Todo: Vytvor nový objekt typu Laser a nastav parameter fire na hodnotu delayu
         img = pyglet.image.load("Assetss/PNG/Lasers/laserBlue04.png")
         set_anchor_of_image_to_center(img)
 
         laser_x = self.sprite.x + math.cos(self.rotation) * self.radius
         laser_y = self.sprite.y + math.sin(self.rotation) * self.radius
 
-
-
         laser = Laser(img,laser_x,laser_y)
         laser.rotation = self.rotation
-
-    
-        laser.sprite.rotation = self.sprite.rotation 
 
         game_objects.append(laser)
 
@@ -238,19 +232,18 @@ class Asteroid(SpaceObject):
 Trieda Laser
 """
 class Laser(SpaceObject):
-    #Todo: dorobiť triedu Laser
     def __init__(self, sprite, x ,y):
         super().__init__(sprite,x,y)
-        self.y_speed = laserspeed * math.sin(self.rotation)
-        self.x_speed = laserspeed * math.cos(self.rotation)  
         self.laserlifetime = laserlifetime
     def tick(self,dt):
         super().tick(dt)
-
         self.laserlifetime -= 0.5
         if self.laserlifetime == 0:
             self.delete()
 
+        self.y_speed = laserspeed * math.sin(self.rotation)
+        self.x_speed = laserspeed * math.cos(self.rotation)
+        
         for obj in [o for o in game_objects if o != self and o != Spaceship]:
             d = self.distance(obj)
             if d < self.radius + obj.radius:
