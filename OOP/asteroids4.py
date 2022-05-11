@@ -19,14 +19,13 @@ game_objects = []
 batch = pyglet.graphics.Batch() #ZOZNAM SPRITOV PRE ZJEDNODUŠENÉ VYKRESLENIE
 pressed_keyboards = set()       #MNOŽINA ZMAČKNUTÝCH KLÁVES
 
-delay_shooting = 0.5
+delay_shooting = 0.4
 laserlifetime = 45
-laserspeed = 200
+laserspeed = 250
 
 "Score"
 score = 0
-scoreLabel = pyglet.text.Label(text=str(score), font_size=40,x = 1150, y = 760, anchor_x='right', anchor_y='center', batch=batch )
-
+scoreLabel = pyglet.text.Label(text=str(score), font_size=40,x = 1150, y = 760, anchor_x='right', anchor_y='center', batch=batch)
 "------------------- FUNKCIE __________________"
 
 """
@@ -35,6 +34,7 @@ Vycentruj ukotvenie obrázka na stred
 def set_anchor_of_image_to_center(img):
     img.anchor_x = img.width // 2
     img.anchor_y = img.height // 2
+    
 
 """
 Pomocna funkcia na zobrazenia kolizneho kolecka
@@ -153,8 +153,6 @@ class Spaceship(SpaceObject):
 
         game_objects.append(laser)
 
-        pass
-
     """
     Každý frame sa vykoná táto metóda to znamená v našom prípade:
     60 simkov * za sekundu
@@ -223,10 +221,11 @@ class Asteroid(SpaceObject):
 
     "Metóda ktorá sa vykoná ak dôjde ku kolíziiwwwww a asteroidu"
     def hit_by_laser(self, laser):
+        global score
         # Todo: update score
         self.delete()
         laser.delete()
-        pass
+        score += 10
 
 """
 Trieda Laser
@@ -274,7 +273,7 @@ class Game:
                            'Assetss/PNG/Meteors/meteorGrey_med1.png',
                            'Assetss/PNG/Meteors/meteorGrey_small1.png',
                            'Assetss/PNG/Meteors/meteorGrey_tiny1.png']
-
+        self.fire_image = ["Assetss/PNG/Effects/fire05.png"]
 
     """
     Vytvorenie objektov pre začiatok hry
@@ -289,10 +288,12 @@ class Game:
         self.background.scale_x = 6
         self.background.scale_y = 4
 
+        
+
         #Vytvorenie Meteoritov
         self.create_asteroids(count=7)
         #Pridavanie novych asteroidoch každych 10 sekund
-        pyglet.clock.schedule_interval(self.create_asteroids, 10, 1)
+        pyglet.clock.schedule_interval(self.create_asteroids, 6, 1)
 
     def create_asteroids(self, dt=0, count=1):
         "Vytvorenie X asteroidov"
