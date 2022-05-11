@@ -136,7 +136,13 @@ class Spaceship(SpaceObject):
     def __init__(self, sprite, x ,y):
         super().__init__(sprite,x,y)
         self.laser_ready = True
-
+        
+        #flame sprity
+        flame_sprite = pyglet.image.load("Assetss/PNG/Effects/fire05.png")
+        set_anchor_of_image_to_center(flame_sprite)
+        self.flame = pyglet.sprite.Sprite(flame_sprite,batch=batch)
+        self.flame.visible = False
+    
     """
     Metóda zodpovedná za vystrelenie laseru
     """
@@ -151,7 +157,7 @@ class Spaceship(SpaceObject):
         laser.rotation = self.rotation
 
         game_objects.append(laser)
-
+    
     """
     Každý frame sa vykoná táto metóda to znamená v našom prípade:
     60 simkov * za sekundu
@@ -165,6 +171,15 @@ class Spaceship(SpaceObject):
             self.x_speed = self.x_speed + dt * ACCELERATION * math.cos(self.rotation)
             self.y_speed = self.y_speed + dt * ACCELERATION * math.sin(self.rotation)
 
+            #flame pozicie a zobrazenie
+            self.flame.x = self.sprite.x - math.cos(self.rotation) * self.radius
+            self.flame.y = self.sprite.y - math.sin(self.rotation) * self.radius
+            self.flame.rotation = self.sprite.rotation
+            self.flame.visible = True
+        #ak nie je W tak flame neni vidno
+        else:
+            self.flame.visible = False
+        
         "Spomalenie/spätný chod po kliknutí klávesy S"
         if 'S' in pressed_keyboards:
             self.x_speed = self.x_speed - dt * ACCELERATION * math.cos(self.rotation)
@@ -221,7 +236,6 @@ class Asteroid(SpaceObject):
     "Metóda ktorá sa vykoná ak dôjde ku kolíziiwwwww a asteroidu"
     def hit_by_laser(self, laser):
         global score
-        # Todo: update score
         self.delete()
         laser.delete()
         score += 10
@@ -272,7 +286,6 @@ class Game:
                            'Assetss/PNG/Meteors/meteorGrey_med1.png',
                            'Assetss/PNG/Meteors/meteorGrey_small1.png',
                            'Assetss/PNG/Meteors/meteorGrey_tiny1.png']
-        self.fire_image = ["Assetss/PNG/Effects/fire05.png"]
 
     """
     Vytvorenie objektov pre začiatok hry
