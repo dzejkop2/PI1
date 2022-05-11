@@ -23,8 +23,15 @@ delay_shooting = 0.4
 laserlifetime = 45
 laserspeed = 250
 
+shield_duration = 3
+
 "Score"
 score = 0
+
+
+pos_x = 0
+pos_y = 0
+rotation = 0
 "------------------- FUNKCIE __________________"
 
 """
@@ -136,7 +143,8 @@ class Spaceship(SpaceObject):
     def __init__(self, sprite, x ,y):
         super().__init__(sprite,x,y)
         self.laser_ready = True
-        
+        self.shield = False
+
         #flame sprity
         flame_sprite = pyglet.image.load("Assetss/PNG/Effects/fire05.png")
         set_anchor_of_image_to_center(flame_sprite)
@@ -157,7 +165,25 @@ class Spaceship(SpaceObject):
         laser.rotation = self.rotation
 
         game_objects.append(laser)
-    
+
+    def get_shield(self):
+        self.shield = True
+        img = pyglet.image.load('Assetss/PNG/Effects/shield1.png')
+        set_anchor_of_image_to_center(img)
+        shield = Shield(img, self.sprite.x, self.sprite.y)
+        
+        game_objects.append(shield)
+        pyglet.clock.schedule_once(self.shield_lose, shield_duration)
+
+    def shield_lose(self,dt):
+        self.shield = False
+        
+    def get_position(self):
+        global pos_x,pos_y,rotation
+        pos_x = self.sprite.x
+        pos_y = self.sprite.y
+        rotation = self.rotation
+
     """
     Každý frame sa vykoná táto metóda to znamená v našom prípade:
     60 simkov * za sekundu
@@ -202,7 +228,9 @@ class Spaceship(SpaceObject):
             self.shoot()
             self.laser_ready = False
             pyglet.clock.schedule_once(self.reload, delay_shooting)
-            
+        
+        if self.shield == True:
+            self.get_position()
 
         "VYBERIE VŠETKY OSTATNE OBJEKTY OKREM SEBA SAMA"
         for obj in [o for o in game_objects if o != self]:
@@ -222,6 +250,7 @@ class Spaceship(SpaceObject):
     
     def reload(self,dt):
         self.laser_ready = True
+        
 
 """
 Trieda Asteroid
@@ -229,8 +258,10 @@ Trieda Asteroid
 class Asteroid(SpaceObject):
     "Metóda ktorá sa vykoná ak dôjde ku kolízii lode a asteroidu"
     def hit_by_spaceship(self, ship):
-        pressed_keyboards.clear()
-        ship.reset()
+        if ship.shield == False:
+            pressed_keyboards.clear()
+            ship.reset()
+            ship.get_shield()
         self.delete()
 
     "Metóda ktorá sa vykoná ak dôjde ku kolíziiwwwww a asteroidu"
@@ -263,6 +294,20 @@ class Laser(SpaceObject):
                 break
     
 
+class Shield(SpaceObject):
+    def __init__(self, sprite, x, y):
+        super().__init__(sprite,x, y)
+        self.shield_duration = shield_duration        
+    def tick(self,dt):
+        global pos_x,pos_y
+        super().tick(dt)
+        
+        self.sprite.x = pos_x
+        self.sprite.y = pos_y
+
+        self.shield_duration -= dt
+        if self.shield_duration <= 0:
+            self.delete()
 
 """
 GAME WINDOW CLASS
