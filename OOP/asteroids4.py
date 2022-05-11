@@ -25,7 +25,6 @@ laserspeed = 250
 
 "Score"
 score = 0
-scoreLabel = pyglet.text.Label(text=str(score), font_size=40,x = 1150, y = 760, anchor_x='right', anchor_y='center', batch=batch)
 "------------------- FUNKCIE __________________"
 
 """
@@ -320,11 +319,14 @@ class Game:
     Event metóda ktorá sa volá na udalosť on_draw stále dookola
     """
     def draw_game(self):
+        global score,scoreLabel
         # Vymaže aktualny obsah okna
         self.window.clear()
         # Vykreslenie pozadia
         self.background.draw()
-
+        scoreLabel = pyglet.text.Label(text=str(score), font_size=40,x = 1150, y = 760, anchor_x='right', anchor_y='center')
+        scoreLabel.draw()
+        
         "Vykreslenie koliznych koliečok"
         for o in game_objects:
             draw_circle(o.sprite.x, o.sprite.y, o.radius)
