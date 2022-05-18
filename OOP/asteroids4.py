@@ -26,8 +26,8 @@ laserspeed = 250
 shield_duration = 3
 
 "Score"
-score = 300
-LIFES = 3
+score = 0
+lifes = 3
 
 pos_x = 0
 pos_y = 0
@@ -258,12 +258,12 @@ Trieda Asteroid
 class Asteroid(SpaceObject):
     "Metóda ktorá sa vykoná ak dôjde ku kolízii lode a asteroidu"
     def hit_by_spaceship(self, ship):
-        global LIFES
+        global lifes
         if ship.shield == False:
             pressed_keyboards.clear()
             ship.reset()
             ship.get_shield()
-            LIFES -= 1
+            lifes -= 1
         self.delete()
 
     "Metóda ktorá sa vykoná ak dôjde ku kolíziiwwwww a asteroidu"
@@ -373,26 +373,28 @@ class Game:
             #Temp asteroid object
             asteroid = Asteroid(img, position[0], position[1], tmp_speed_x, tmp_speed_y)
             game_objects.append(asteroid)
-
+    
     def game_lifes(self):
-        global LIFES
+        global lifes
         life = pyglet.image.load("Assetss/PNG/UI/playerLife1_blue.png")
         width = 10
-        for i in range(LIFES):
+        for i in range(lifes):
             life_asset = pyglet.sprite.Sprite(life,width,HEIGHT - 40)
             life_asset.draw()
             width += 40
     
     def game_end(self):
         exit = pyglet.app.exit()
-        if LIFES <= 0:
+        if lifes <= 0:
             lose_text = pyglet.text.Label(text="Prehral si!", font_size =70,x= 400,y= HEIGHT/2)
+            #game_objects.clear()
+            #self.window.clear()
             lose_text.draw()
-            pyglet.clock.schedule_once(exit,5)
-        if score >= 300:
+            #pyglet.clock.schedule_once(exit,5)
+        if score >= 150:
             win_text = pyglet.text.Label(text="Vyhral si!", font_size =70,x= 400,y= HEIGHT/2)
             win_text.draw()
-            pyglet.clock.schedule_once(exit,5)
+            #pyglet.clock.schedule_once(exit,5)
     """
     Event metóda ktorá sa volá na udalosť on_draw stále dookola
     """
@@ -424,7 +426,7 @@ class Game:
                 gl.glPopMatrix()
 
         self.game_lifes()
-        self.game_end()
+        #self.game_end()
     """
     Event metóda pre spracovanie klávesových vstupov
     """
