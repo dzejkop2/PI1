@@ -27,7 +27,9 @@ shield_duration = 3
 
 "Score"
 score = 0
+
 lifes = 3
+max_score = 150
 
 pos_x = 0
 pos_y = 0
@@ -384,17 +386,17 @@ class Game:
             width += 40
     
     def game_end(self):
-        exit = pyglet.app.exit()
         if lifes <= 0:
-            lose_text = pyglet.text.Label(text="Prehral si!", font_size =70,x= 400,y= HEIGHT/2)
-            #game_objects.clear()
-            #self.window.clear()
+            self.window.clear()
+            game_objects.clear()
+            lose_text = pyglet.text.Label(text="Game Over!", font_size =70,x=WIDTH/2,y=HEIGHT/2,anchor_x='center', anchor_y='center')
             lose_text.draw()
-            #pyglet.clock.schedule_once(exit,5)
-        if score >= 150:
-            win_text = pyglet.text.Label(text="Vyhral si!", font_size =70,x= 400,y= HEIGHT/2)
+        elif score >= max_score:
+            self.window.clear()
+            game_objects.clear()
+            win_text = pyglet.text.Label(text="Victory!", font_size =70,x=WIDTH/2,y=HEIGHT/2,anchor_x='center', anchor_y='center')
             win_text.draw()
-            #pyglet.clock.schedule_once(exit,5)
+        
     """
     Event metóda ktorá sa volá na udalosť on_draw stále dookola
     """
@@ -404,13 +406,12 @@ class Game:
         self.window.clear()
         # Vykreslenie pozadia
         self.background.draw()
-        scoreLabel = pyglet.text.Label(text=str(score), font_size=40,x = 1150, y = 760, anchor_x='right', anchor_y='center')
-        scoreLabel.draw()
         
         "Vykreslenie koliznych koliečok"
+        """
         for o in game_objects:
             draw_circle(o.sprite.x, o.sprite.y, o.radius)
-
+        """
         # Táto časť sa stará o to aby bol prechod cez okraje okna plynulý a nie skokový
         for x_offset in (-self.window.width, 0, self.window.width):
             for y_offset in (-self.window.height, 0, self.window.height):
@@ -424,9 +425,12 @@ class Game:
 
                 # Restore remembered state (this cancels the glTranslatef)
                 gl.glPopMatrix()
+        
+        scoreLabel = pyglet.text.Label(text=str(score), font_size=40,x = 1150, y = 760, anchor_x='right', anchor_y='center')
+        scoreLabel.draw()
 
         self.game_lifes()
-        #self.game_end()
+        self.game_end()
     """
     Event metóda pre spracovanie klávesových vstupov
     """
